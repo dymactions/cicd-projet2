@@ -113,9 +113,9 @@ jobs:
     # needs: e2e
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    # environment:
-    #   name: production
-    #   url: http://$SERVER_PRODUCTION_IP
+    environment:
+      name: production
+      url: http://$SERVER_PRODUCTION_IP
     steps:
       - name: checkout
         uses: actions/checkout@v4
