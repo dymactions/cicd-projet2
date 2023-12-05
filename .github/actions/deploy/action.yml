@@ -10,9 +10,11 @@ inputs:
   user_vps:
     description: "User for ssh connexion sur le vps"
     default: root
-    required: false
   token_github:
     description: 'Token Github',
+    required: true
+  actor_github:
+    description: 'github actor',
     required: true
 runs:
   using: "composite"
@@ -25,5 +27,5 @@ runs:
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
         scp docker-compose.production.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.production.yml
-        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }}"
+        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ inputs.actor_github }} -p ${{ inputs.token_github }}"
         ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
