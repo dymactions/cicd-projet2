@@ -10,6 +10,7 @@ inputs:
   user_vps:
     description: "User for ssh connexion sur le vps"
     default: root
+    required: false
   token_github:
     description: 'Token Github',
     required: true
