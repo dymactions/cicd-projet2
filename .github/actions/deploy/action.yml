@@ -13,16 +13,16 @@ inputs:
   token_github:
     description: 'Token Github',
     required: true
-runs:
-  using: "composite"
-  steps:
-    - name: déployer sur le serveur
-      shell: bash
-      run: |
-        eval $(ssh-agent -s)
-        ssh-add - <<< "${{ inputs.vps_key }}"
-        mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
-        scp docker-compose.production.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.production.yml
-        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }}"
-        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
+  runs:
+    using: "composite"
+    steps:
+      - name: déployer sur le serveur
+        shell: bash
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add - <<< "${{ inputs.vps_key }}"
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
+          scp docker-compose.production.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.production.yml
+          ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }}"
+          ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
