@@ -1,28 +1,25 @@
-name: "Deployer sur le serveur cible"
+name: "Déployer sur le serveur cible"
 description: "Effectue un déploiement sur le serveur cible"
 inputs:
-  vps_key:
-    description: "clé ssh pour le vps"
+  token_github:
+    description: "Token GitHub"
     required: true
   server_ip:
     description: "Adresse IP du serveur cible"
     required: true
-  user_vps:
-    description: "User for ssh connexion sur le vps"
-    default: 'root'
-  token_github:
-    description: 'Token Github',
+  secret_key:
+    description: "Clé secrète pour l authentification SSH"
     required: true
-  runs:
-    using: "composite"
-    steps:
-      - name: déployer sur le serveur
-        shell: bash
-        run: |
-          eval $(ssh-agent -s)
-          ssh-add - <<< "${{ inputs.vps_key }}"
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
-          scp docker-compose.production.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.production.yml
-          ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }}"
-          ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
+runs:
+  using: "composite"
+  steps:
+    - name: déployer sur le serveur
+      shell: bash
+      run: |
+        eval $(ssh-agent -s)
+        ssh-add - <<< "${{ inputs.secret_key }}"
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
+        scp -r docker-compose.prod.yml root@${{ inputs.server_ip }}:/root/docker-compose.prod.yml
+        ssh root@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }} &&
+          docker compose -f /root/docker-compose.prod.yml up -d --force-recreate"
