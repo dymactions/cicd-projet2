@@ -4,6 +4,7 @@ services:
     image: ghcr.io/dymactions/cicd-projet2/node-api:latest
     environment:
       - NODE_ENV=production
+    pull_policy: always
     deploy:
       replicas: 3
       update_config:
@@ -13,6 +14,7 @@ services:
         condition: on-failure
   frontend:
     image: ghcr.io/dymactions/cicd-projet2/frontend:latest
+    pull_policy: always
     ports:
       - target: 80
         published: 80
