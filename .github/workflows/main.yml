@@ -122,7 +122,7 @@ jobs:
       - name: deployer sur le serveur de staging
         uses: ./.github/actions/deploy
         with:
-          secret_key: ${{ secrets.VPS_KEY }}
+          vps_key: ${{ secrets.VPS_KEY }}
           server_ip: ${{ env.SERVER_STAGING_IP }}
           token_github: ${{ secrets.GITHUB_TOKEN }}
 
